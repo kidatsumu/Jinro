@@ -1,0 +1,16 @@
+{
+  "plugins": {
+    "node": {}
+  },
+  "build": {
+    "commands": [
+      "npm install"
+    ]
+  },
+  "start": {
+    "cmd": "node index.js"
+  },
+  "env": {
+    "PORT": "3000"
+  }
+}

@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: jinro-server
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    rootDir: server
+    autoDeploy: true
