@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/socket.io': {
-        target: 'http://localhost:3000',
+        target: 'https://jinro-qu96.onrender.com0',
         ws: true
       }
     }
