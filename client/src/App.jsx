@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("/");
+const socket = io("https://jinro-qu96.onrender.com");
 
 export default function App() {
   const [roomId, setRoomId] = useState("");
