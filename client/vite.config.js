@@ -3,17 +3,15 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    proxy: {
-      '/socket.io': {
-        target: 'https://jinro-qu96.onrender.com0',
-        ws: true
-      }
-    }
-  },
   build: {
     outDir: 'dist'
   },
-  // ← これが重要
-  base: './',
+  server: {
+    proxy: {
+      '/socket.io': {
+        target: 'https://jinro-1.onrender.com',
+        ws: true
+      }
+    }
+  }
 });
