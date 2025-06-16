@@ -10,5 +10,10 @@ export default defineConfig({
         ws: true
       }
     }
-  }
+  },
+  build: {
+    outDir: 'dist'
+  },
+  // ← これが重要
+  base: './',
 });
