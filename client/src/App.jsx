@@ -1,3 +1,4 @@
+// client/src/App.jsx
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
@@ -8,12 +9,20 @@ export default function App() {
   const [name, setName] = useState("");
   const [joined, setJoined] = useState(false);
   const [room, setRoom] = useState(null);
+  const [myRole, setMyRole] = useState("");
 
   useEffect(() => {
     socket.on("roomUpdate", setRoom);
     socket.on("gameStarted", setRoom);
     socket.on("phaseChange", setRoom);
   }, []);
+
+  useEffect(() => {
+    if (room && room.players) {
+      const me = room.players.find(p => p.id === socket.id);
+      if (me) setMyRole(me.role);
+    }
+  }, [room]);
 
   const join = () => {
     socket.emit("joinRoom", { roomId, name });
@@ -37,17 +46,29 @@ export default function App() {
   return (
     <div>
       <h2>Room: {roomId}</h2>
-      <h3>Phase: {room.gamePhase}</h3>
-      <ul>
+      <h3>現在のフェーズ: {room.gamePhase === "waiting" ? "🕒 待機中" : room.gamePhase === "day" ? "☀️ 昼" : "🌙 夜"}</h3>
+
+      {myRole && (
+        <div style={{ marginTop: '1rem', fontWeight: 'bold' }}>
+          あなたの役職: {myRole === 'werewolf' ? '🐺 人狼' : myRole === 'seer' ? '🔮 占い師' : '👤 村人'}
+        </div>
+      )}
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
         {room.players.map(p => (
-          <li key={p.id}>
-            {p.name} ({p.alive ? "Alive" : "Dead"})
-            {room.gamePhase === "day" && p.alive && <button onClick={() => vote(p.id)}>Vote</button>}
-            {room.gamePhase === "night" && p.alive && <button onClick={() => nightAction(p.id)}>Night Act</button>}
+          <li key={p.id} style={{
+            padding: '4px 0',
+            color: p.alive ? 'black' : 'gray',
+            fontWeight: p.id === socket.id ? 'bold' : 'normal'
+          }}>
+            {p.alive ? '🟢' : '⚫️'} {p.name} {p.id === socket.id ? '(あなた)' : ''}
+            {room.gamePhase === "day" && p.alive && <button onClick={() => vote(p.id)}>投票</button>}
+            {room.gamePhase === "night" && p.alive && <button onClick={() => nightAction(p.id)}>夜の行動</button>}
           </li>
         ))}
       </ul>
-      {room.gamePhase === "waiting" && <button onClick={startGame}>Start Game</button>}
+
+      {room.gamePhase === "waiting" && <button onClick={startGame}>ゲーム開始</button>}
     </div>
   );
 }
